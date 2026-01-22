@@ -3,16 +3,20 @@ import mongoose from "mongoose";
 const studenSchema = new mongoose.Schema({
     first_name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     last_name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     age: {
         type: Number,
@@ -33,4 +37,4 @@ const studenSchema = new mongoose.Schema({
     }
 });
 
-export default mongoose.model('Users', studenSchema);
+export const userModel = mongoose.model('Users', studenSchema);
