@@ -1,6 +1,6 @@
 import { Router } from "express";
-import userControllers from "../controllers/user.controllers";
-import { hashPassword, comparePassword } from "../utils/crypt";
+import userControllers from "../controllers/user.controllers.js";
+import { hashPassword, comparePassword } from "../utils/crypt.js";
 
 const router = Router();
 

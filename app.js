@@ -1,9 +1,9 @@
-import { config } from "dotenv";
 import express from "express";
-import router from "./routes/user.router.js";
-import {config} from "./config/db.js";
+import { config } from "./src/config/config.js";
+import { connectDB } from "./src/config/db.js";
+import router from "./src/routes/user.router.js";
 
-config();
+connectDB();
 const app = express(); 
 
 app.use(express.json());
