@@ -32,8 +32,7 @@ const studenSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
+        role: req.body.role || "user"
     }
 });
 
