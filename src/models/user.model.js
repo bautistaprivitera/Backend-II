@@ -32,7 +32,7 @@ const studenSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        role: req.body.role || "user"
+        default: "user"
     }
 });
 

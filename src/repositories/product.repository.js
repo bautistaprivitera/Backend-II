@@ -8,14 +8,14 @@ export default class ProductRepository {
     }
 
     getById(id) {
-        return this.dao.getProductById(id);
+        return this.dao.getById(id);
     }
 
     update(id, data) {
-        return this.dao.updateProduct(id, data);
+        return this.dao.update(id, data);
     }
 
     getAll() {
-        return this.dao.getAllProducts();
+        return this.dao.getAll();
     }
 }

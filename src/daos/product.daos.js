@@ -1,4 +1,4 @@
-import { productModel } from "../models/product.model";
+import { productModel } from "../models/product.model.js";
 
 export const create = (data) => productModel.create(data);
 export const getById = (id) => productModel.findById(id).lean();

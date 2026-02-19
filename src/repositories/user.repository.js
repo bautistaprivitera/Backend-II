@@ -12,7 +12,7 @@ export default class UserRepository {
     }
 
     getByEmail(email) {
-        return this.dao.getUserByEmail(email);
+        return this.dao.getByEmail(email);
     }
 
     create(user) {

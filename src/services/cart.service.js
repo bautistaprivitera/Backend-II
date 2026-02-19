@@ -22,7 +22,7 @@ const addProductToCart = async (cid, pid, quantity = 1) => {
     const product = await productRepo.getById(pid);
     if(!product) throw new Error("Product not found");
 
-    const idx = cart.products.findIndex(p => p.product._id.toString() === pid);
+    const idx = cart.products.findIndex(p => String(p.product) === String(pid));
     if(idx === -1) cart.products.push({product: pid, quantity});
     else cart.products[idx].quantity += quantity;
 
@@ -31,46 +31,43 @@ const addProductToCart = async (cid, pid, quantity = 1) => {
 }
 
 const purchaseCart = async (cid, purchaserEmail) => {
+  const cart = await cartRepo.getRawById(cid);
+  if (!cart) throw new Error("Cart not found");
 
-    const cart = await cartRepo.getRawById(cid);
-    if(!cart) throw new Error("Cart not found");
+  const fullCart = await cartRepo.getById(cid);
+  const rejectedProducts = [];
+  let amount = 0;
 
-    const fullCart = await cartRepo.getById(cid);
-    const rejectedProducts = [];
+  for (const item of fullCart.products) {
+    const product = item.product;
+    const quantity = item.quantity;
 
-    let amount = 0;
-
-    for(const product of fullCart.products) {
-        
-        const product = item.product
-        const quantity = item.quantity
-
-        if(!product || typeof product.stock !== 'number'){
-
-            rejectedProducts.push({product: item.product?._id ?? null, quantity: quantity});
-            continue;
-        }
-
-        if(product.stock >= quantity){
-            await productRepo.update(product._id, {stock: product.stock - quantity});
-            amount += product.price * quantity;
-        } else {
-            rejectedProducts.push({product: product._id, quantity: quantity});
-        }
+    if (!product || typeof product.stock !== "number") {
+      rejectedProducts.push({ product: item.product?._id ?? null, quantity });
+      continue;
     }
 
-    let ticket = null;
-    if(amount > 0){
-
-        const code = `T-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-        ticket = await ticketRepo.create({code, amount, purchaser: purchaserEmail});
-
-        const rejectedIds = new Set(rejectedProducts.map(r => String(r.product)));
-        cart.products = cart.products.filter(p => rejectedIds.has(String(p.product)));
-        await cart.save();
+    if (product.stock >= quantity) {
+      await productRepo.update(product._id, { stock: product.stock - quantity });
+      amount += product.price * quantity;
+    } else {
+      rejectedProducts.push({ product: product._id, quantity });
     }
+  }
 
-    return {ticket, rejectedProducts};
-}
+  let ticket = null;
+
+  if (amount > 0) {
+    const code = `T-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    ticket = await ticketRepo.create({ code, amount, purchaser: purchaserEmail });
+
+    const rejectedIds = new Set(rejectedProducts.map(r => String(r.product)));
+    cart.products = cart.products.filter(p => rejectedIds.has(String(p.product)));
+
+    await cart.save();
+  }
+
+  return { ticket, rejectedProducts };
+};
 
 export default { createCart, getCartById, addProductToCart, purchaseCart };

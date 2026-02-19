@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { userModel } from "../models/user.model";
-import { validPassword } from "../utils/crypt";
+import { userModel } from "../models/user.model.js";
+import { validPassword } from "../utils/crypt.js";
 import UserDTO from "../dto/user.dto.js";
 
 export const login = async (req, res) =>{
@@ -17,7 +17,7 @@ export const login = async (req, res) =>{
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1h"});
         res.cookie('accessToken', token, {httpOnly: true});
-        return res.status(200).json({status: 'success'});
+        return res.status(200).json({status: 'success', token});
 
     } catch (error) {
         res.status(500).json({ error: error.message });

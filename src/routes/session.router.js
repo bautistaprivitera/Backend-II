@@ -1,10 +1,9 @@
 import { Router } from "express";
-import passport from "passport";
-import {login, current} from "../controllers/session.controllers.js";
+import * as sessionControllers from "../controllers/session.controllers.js";
 
 const router = Router();
 
-router.post("/login", login);
-router.get("/current", passport.authenticate("jwt", { session: false }), current);
+router.post("/login", sessionControllers.login);
+router.get("/current", sessionControllers.current);
 
 export default router;
